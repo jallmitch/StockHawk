@@ -30,11 +30,15 @@ import yahoofinance.quotes.stock.StockQuote;
 
 public final class QuoteSyncJob {
 
-    static final int ONE_OFF_ID = 2;
+    private static final int ONE_OFF_ID = 2;
     private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
+    private static final int YEARS_OF_HISTORY = 2;
+
+    private QuoteSyncJob() {
+    }
 
     static void getQuotes(Context context) {
 
@@ -42,7 +46,7 @@ public final class QuoteSyncJob {
 
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
-        from.add(Calendar.YEAR, -2);
+        from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
 
         try {
 
@@ -103,7 +107,7 @@ public final class QuoteSyncJob {
 
             context.getContentResolver()
                     .bulkInsert(
-                            Contract.Quote.uri,
+                            Contract.Quote.URI,
                             quoteCVs.toArray(new ContentValues[quoteCVs.size()]));
 
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
@@ -132,14 +136,14 @@ public final class QuoteSyncJob {
     }
 
 
-    synchronized public static void initialize(final Context context) {
+    public static synchronized void initialize(final Context context) {
 
         schedulePeriodic(context);
         syncImmediately(context);
 
     }
 
-    synchronized public static void syncImmediately(Context context) {
+    public static synchronized void syncImmediately(Context context) {
 
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

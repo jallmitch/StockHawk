@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
 
 class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
-    final private Context context;
-    final private DecimalFormat dollarFormatWithPlus;
-    final private DecimalFormat dollarFormat;
-    final private DecimalFormat percentageFormat;
+    private final Context context;
+    private final DecimalFormat dollarFormatWithPlus;
+    private final DecimalFormat dollarFormat;
+    private final DecimalFormat percentageFormat;
     private Cursor cursor;
     private StockAdapterOnClickHandler clickHandler;
 

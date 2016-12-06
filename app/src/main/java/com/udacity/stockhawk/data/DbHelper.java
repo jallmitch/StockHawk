@@ -7,27 +7,27 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.udacity.stockhawk.data.Contract.Quote;
 
 
-public class DbHelper extends SQLiteOpenHelper {
+class DbHelper extends SQLiteOpenHelper {
 
 
     static final String NAME = "StockHawk.db";
     private static final int VERSION = 1;
 
 
-    public DbHelper(Context context) {
+    DbHelper(Context context) {
         super(context, NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String builder = "CREATE TABLE " + Quote.TABLE_NAME + " (" +
-                Quote._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                Quote.COLUMN_SYMBOL + " TEXT NOT NULL, " +
-                Quote.COLUMN_PRICE + " REAL NOT NULL, " +
-                Quote.COLUMN_ABSOLUTE_CHANGE + " REAL NOT NULL, " +
-                Quote.COLUMN_PERCENTAGE_CHANGE + " REAL NOT NULL, " +
-                Quote.COLUMN_HISTORY + " TEXT NOT NULL, " +
-                "UNIQUE (" + Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
+        String builder = "CREATE TABLE " + Quote.TABLE_NAME + " ("
+                + Quote._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + Quote.COLUMN_SYMBOL + " TEXT NOT NULL, "
+                + Quote.COLUMN_PRICE + " REAL NOT NULL, "
+                + Quote.COLUMN_ABSOLUTE_CHANGE + " REAL NOT NULL, "
+                + Quote.COLUMN_PERCENTAGE_CHANGE + " REAL NOT NULL, "
+                + Quote.COLUMN_HISTORY + " TEXT NOT NULL, "
+                + "UNIQUE (" + Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
 
         db.execSQL(builder);
 
