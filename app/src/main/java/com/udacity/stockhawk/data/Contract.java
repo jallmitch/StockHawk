@@ -4,6 +4,8 @@ package com.udacity.stockhawk.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.google.common.collect.ImmutableList;
+
 public final class Contract {
 
     static final String AUTHORITY = "com.udacity.stockhawk";
@@ -14,6 +16,7 @@ public final class Contract {
     private Contract() {
     }
 
+    @SuppressWarnings("unused")
     public static final class Quote implements BaseColumns {
 
         public static final Uri URI = BASE_URI.buildUpon().appendPath(PATH_QUOTE).build();
@@ -28,14 +31,14 @@ public final class Contract {
         public static final int POSITION_ABSOLUTE_CHANGE = 3;
         public static final int POSITION_PERCENTAGE_CHANGE = 4;
         public static final int POSITION_HISTORY = 5;
-        public static final String[] QUOTE_COLUMNS = {
+        public static final ImmutableList<String> QUOTE_COLUMNS = ImmutableList.of(
                 _ID,
                 COLUMN_SYMBOL,
                 COLUMN_PRICE,
                 COLUMN_ABSOLUTE_CHANGE,
                 COLUMN_PERCENTAGE_CHANGE,
                 COLUMN_HISTORY
-        };
+        );
         static final String TABLE_NAME = "quotes";
 
         public static Uri makeUriForStock(String symbol) {
