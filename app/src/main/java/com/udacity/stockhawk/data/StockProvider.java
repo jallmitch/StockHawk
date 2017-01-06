@@ -2,6 +2,7 @@ package com.udacity.stockhawk.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,14 +13,14 @@ import android.support.annotation.Nullable;
 
 public class StockProvider extends ContentProvider {
 
-    static final int QUOTE = 100;
-    static final int QUOTE_FOR_SYMBOL = 101;
+    private static final int QUOTE = 100;
+    private static final int QUOTE_FOR_SYMBOL = 101;
 
-    static UriMatcher uriMatcher = buildUriMatcher();
+    private static final UriMatcher uriMatcher = buildUriMatcher();
 
     private DbHelper dbHelper;
 
-    static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         matcher.addURI(Contract.AUTHORITY, Contract.PATH_QUOTE, QUOTE);
         matcher.addURI(Contract.AUTHORITY, Contract.PATH_QUOTE_WITH_SYMBOL, QUOTE_FOR_SYMBOL);
@@ -68,11 +69,10 @@ public class StockProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown URI:" + uri);
         }
 
-        returnCursor.setNotificationUri(getContext().getContentResolver(), uri);
-
-//        if (db.isOpen()) {
-//            db.close();
-//        }
+        Context context = getContext();
+        if (context != null){
+            returnCursor.setNotificationUri(context.getContentResolver(), uri);
+        }
 
         return returnCursor;
     }
@@ -102,8 +102,10 @@ public class StockProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown URI:" + uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri, null);
-
+        Context context = getContext();
+        if (context != null){
+            context.getContentResolver().notifyChange(uri, null);
+        }
 
         return returnUri;
     }
@@ -139,8 +141,12 @@ public class StockProvider extends ContentProvider {
         }
 
         if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            Context context = getContext();
+            if (context != null){
+                context.getContentResolver().notifyChange(uri, null);
+            }
         }
+
         return rowsDeleted;
     }
 
@@ -170,7 +176,12 @@ public class StockProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+
+                Context context = getContext();
+                if (context != null) {
+                    context.getContentResolver().notifyChange(uri, null);
+                }
+
                 return returnCount;
             default:
                 return super.bulkInsert(uri, values);
