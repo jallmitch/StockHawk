@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_stock_detail_report"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/stock_chart"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        />
-</RelativeLayout>
+    <!--<fragment-->
+        <!--android:id="@+id/stock_detail_fragment"-->
+        <!--class="com.udacity.stockhawk.ui.StockDetailFragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--/>-->
+</FrameLayout>

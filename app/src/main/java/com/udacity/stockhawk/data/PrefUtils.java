@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.github.mikephil.charting.data.CandleEntry;
 import com.udacity.stockhawk.R;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public final class PrefUtils {
 
@@ -88,4 +91,23 @@ public final class PrefUtils {
         editor.apply();
     }
 
+    public static Map<Long, CandleEntry> parseHistory(String history)
+    {
+        Map<Long, CandleEntry> quoteMap = new TreeMap<>();
+        String[] historyVals = history.split(",");
+        int quoteIndex = (historyVals.length/5)-1;
+        for (int v = 0; v <= (historyVals.length-1); v++)
+        {
+            Long time = Long.parseLong(historyVals[v++]);
+            CandleEntry entry =new CandleEntry(
+                    quoteIndex--,
+                    Float.parseFloat(historyVals[v++]),
+                    Float.parseFloat(historyVals[v++]),
+                    Float.parseFloat(historyVals[v++]),
+                    Float.parseFloat(historyVals[v]));
+
+            quoteMap.put(time, entry);
+        }
+        return quoteMap;
+    }
 }

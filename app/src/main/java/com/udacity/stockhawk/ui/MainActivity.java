@@ -46,14 +46,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onClick(String symbol) {
-
-        Bundle args = new Bundle();
-        args.putString("STOCK_SYMBOL", symbol);
-
-        StockDetailReport.StockDetailFragment fragment = new StockDetailReport.StockDetailFragment();
-        fragment.setArguments(args);
-
         Intent intent = new Intent(this, StockDetailReport.class);
+        intent.putExtra("STOCK_SYMBOL", symbol);
         startActivity(intent);
     }
 
