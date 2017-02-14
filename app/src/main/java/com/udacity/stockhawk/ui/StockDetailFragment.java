@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
@@ -24,7 +25,6 @@ import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
-import com.udacity.stockhawk.data.PrefUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -77,20 +77,28 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             Float percentChange = data.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
             TextView stockLabel = (TextView) getActivity().findViewById(R.id.stock_symbol_textview);
-            stockLabel.setText(mName + " (" + symbol + ")");
+            stockLabel.setText(mName);
 
 
             TextView priceLabel = (TextView) getActivity().findViewById(R.id.stock_price_textview);
-            priceLabel.setText("Current Price $" + price);
+            priceLabel.setText("$" + price);
 
             TextView absoluteLabel = (TextView) getActivity().findViewById(R.id.stock_absolute_textview);
-            absoluteLabel.setText("Absolute Change: " + absoluteChange);
+            if (absoluteChange > 0)
+                absoluteLabel.setTextColor(Color.GREEN);
+            else
+                absoluteLabel.setTextColor(Color.RED) ;
+            absoluteLabel.setText(absoluteChange.toString());
 
             TextView percentLabel = (TextView) getActivity().findViewById(R.id.stock_percent_textview);
-            percentLabel.setText("Percentage Change:" + percentChange);
+            if (percentChange > 0)
+                percentLabel.setTextColor(Color.GREEN);
+            else
+                percentLabel.setTextColor(Color.RED) ;
+            percentLabel.setText(percentChange.toString());
 
 
-            Map<Long, CandleEntry> quoteMap = new TreeMap<>(PrefUtils.parseHistory(history));
+            Map<Long, CandleEntry> quoteMap = new TreeMap<>(parseHistory(history));
             List<String> dates = new ArrayList<>();
             int dateOrder = 0;
             for(Map.Entry<Long, CandleEntry> entry : quoteMap.entrySet())
@@ -111,17 +119,20 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             mCandleDataSet.setIncreasingColor(Color.GREEN);
             mCandleDataSet.setDecreasingColor(Color.RED);
             mCandleDataSet.setShowCandleBar(true);
-            mCandleDataSet.setBarSpace(10f);
+            mCandleDataSet.setShadowColor(Color.BLACK);
 
             CandleData mCandleData = new CandleData(mCandleDataSet);
             mCandleData.setValueTextSize(16f);
             CandleStickChart mCandleChart = (CandleStickChart) getActivity().findViewById(R.id.stock_chart);
             mCandleChart.setData(mCandleData);
             mCandleChart.setBackgroundColor(Color.WHITE);
+            Description chartDescript = new Description();
+            chartDescript.setEnabled(false);
+            mCandleChart.setDescription(chartDescript);
             XAxis mAxis = mCandleChart.getXAxis();
             mAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-//            mAxis.setLabelRotationAngle(45f);
             mAxis.setValueFormatter(formatter);
+            mAxis.setGranularity(1f);
             mCandleChart.invalidate();
         }
     }
@@ -133,5 +144,25 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(dateMils);
         return formatter.format(cal.getTime());
+    }
+
+    public static Map<Long, CandleEntry> parseHistory(String history)
+    {
+        Map<Long, CandleEntry> quoteMap = new TreeMap<>();
+        String[] historyVals = history.split(",");
+        int quoteIndex = (historyVals.length/5)-1;
+        for (int v = 0; v <= (historyVals.length-1); v++)
+        {
+            Long time = Long.parseLong(historyVals[v++]);
+            CandleEntry entry =new CandleEntry(
+                    quoteIndex--,
+                    Float.parseFloat(historyVals[v++]),
+                    Float.parseFloat(historyVals[v++]),
+                    Float.parseFloat(historyVals[v++]),
+                    Float.parseFloat(historyVals[v]));
+
+            quoteMap.put(time, entry);
+        }
+        return quoteMap;
     }
 }
