@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,37 +26,53 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class StockDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
+    private DecimalFormat dollarFormatWithPlus;
+    private DecimalFormat dollarFormat;
+    private DecimalFormat percentageFormat;
+
     public StockDetailFragment() {}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("StockDetailFragment", "On Create");
         getLoaderManager().initLoader(0,getArguments(),this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
+        dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
+        dollarFormatWithPlus.setPositivePrefix("+$");
+        percentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
+        percentageFormat.setMaximumFractionDigits(2);
+        percentageFormat.setMinimumFractionDigits(2);
+        percentageFormat.setPositivePrefix("+");
 
         return inflater.inflate(R.layout.fragment_stock_detail, container, false);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d("StockDetailFragment", "On onCreateLoader");
         String stock_symbol = args.getString("STOCK_SYMBOL");
         Uri uri = Contract.Quote.makeUriForStock(stock_symbol);
-        CursorLoader loader = new CursorLoader(getActivity(), uri, null, null,  new String[]{stock_symbol}, null);
-        return loader;
+        return new CursorLoader(getActivity(),
+                               uri,
+                               null,
+                               null,
+                               new String[]{stock_symbol},
+                               null);
     }
 
     @Override
@@ -65,12 +80,8 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        Log.d("StockDetailFragment", "On onLoadFinished");
         if (data.moveToFirst())
         {
-            List<CandleEntry> mBarEntriesCandleEntries = new ArrayList<>();
-
             String history = data.getString(Contract.Quote.POSITION_HISTORY);
 
             if (history.isEmpty())
@@ -82,25 +93,36 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             Float absoluteChange = data.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
             Float percentChange = data.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
-            TextView stockLabel = (TextView) getActivity().findViewById(R.id.stock_symbol_textview);
-            stockLabel.setText(mName);
+            List<CandleEntry> barEntriesCandleEntries = new ArrayList<>();
+            TextView stockTV = (TextView) getActivity().findViewById(R.id.stock_symbol_textview);
+            TextView priceTV = (TextView) getActivity().findViewById(R.id.stock_price_textview);
+            TextView absoluteTV = (TextView) getActivity().findViewById(R.id.stock_absolute_textview);
+            TextView percentTV = (TextView) getActivity().findViewById(R.id.stock_percent_textview);
 
-            TextView priceLabel = (TextView) getActivity().findViewById(R.id.stock_price_textview);
-            priceLabel.setText("$" + price);
+            stockTV.setText(mName);
+            stockTV.setContentDescription(mName);
 
-            TextView absoluteLabel = (TextView) getActivity().findViewById(R.id.stock_absolute_textview);
+            String priceLabel = dollarFormat.format(price);
+            priceTV.setText(priceLabel);
+            priceTV.setContentDescription(getContext().getString(R.string.stock_list_current_price) + " " + priceLabel);
+
+            String absChange = dollarFormatWithPlus.format(absoluteChange);
+            absoluteTV.setText(absChange);
+            absoluteTV.setContentDescription(getContext().getString(R.string.stock_list_absolute_change) + " " + absChange);
+
+            String percentageChange = percentageFormat.format(percentChange);
+            percentTV.setText(percentageChange);
+            percentTV.setContentDescription(getContext().getString(R.string.stock_list_percentage_change) + " " + percentageChange);
+
             if (absoluteChange > 0)
-                absoluteLabel.setTextColor(Color.GREEN);
+                absoluteTV.setTextColor(Color.GREEN);
             else
-                absoluteLabel.setTextColor(Color.RED) ;
-            absoluteLabel.setText(absoluteChange.toString());
+                absoluteTV.setTextColor(Color.RED) ;
 
-            TextView percentLabel = (TextView) getActivity().findViewById(R.id.stock_percent_textview);
             if (percentChange > 0)
-                percentLabel.setTextColor(Color.GREEN);
+                percentTV.setTextColor(Color.GREEN);
             else
-                percentLabel.setTextColor(Color.RED) ;
-            percentLabel.setText(percentChange.toString());
+                percentTV.setTextColor(Color.RED) ;
 
 
             Map<Long, CandleEntry> quoteMap = new TreeMap<>(parseHistory(history));
@@ -109,7 +131,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             for(Map.Entry<Long, CandleEntry> entry : quoteMap.entrySet())
             {
                 dates.add(dateOrder++,addDate(entry.getKey()));
-                mBarEntriesCandleEntries.add(entry.getValue());
+                barEntriesCandleEntries.add(entry.getValue());
             }
             final List<String> dateLabels = new ArrayList<>(dates);
 
@@ -120,7 +142,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
                 }
             };
 
-            CandleDataSet mCandleDataSet = new CandleDataSet(mBarEntriesCandleEntries, mName);
+            CandleDataSet mCandleDataSet = new CandleDataSet(barEntriesCandleEntries, mName);
             mCandleDataSet.setIncreasingColor(Color.GREEN);
             mCandleDataSet.setDecreasingColor(Color.RED);
             mCandleDataSet.setShowCandleBar(true);
@@ -144,7 +166,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     private String addDate(Long dateMils)
     {
-        DateFormat formatter = new SimpleDateFormat("MMM dd, yy");
+        DateFormat formatter = new SimpleDateFormat("MMM dd, yy", Locale.US);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(dateMils);
