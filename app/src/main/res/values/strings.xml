@@ -35,4 +35,16 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- UI Content Descriptions -->
+    <string name="activity_main_swipe_refresh" translatable="true">Swipe to refresh.</string>
+    <string name="activity_main_add_stock" translatable="true">Add new stock.</string>
+    <string name="activity_main_error" translatable="true">An error has occurred.</string>
+    <string name="activity_main_menu_item_absolute" translatable="true">Switch to show Absolute change</string>
+    <string name="activity_main_menu_item_percent" translatable="true">Switch to show Percentage change</string>
+
+    <string name="stock_list_sybmol" translatable="true">Stock Symbol</string>
+    <string name="stock_list_current_price" translatable="true">Current Price</string>
+    <string name="stock_list_absolute_change" translatable="true">Absolute change</string>
+    <string name="stock_list_percentage_change" translatable="true">Percentage change</string>
+    <string name="stock_list_change_negative" translatable="true">negative</string>
 </resources>

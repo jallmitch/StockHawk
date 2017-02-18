@@ -65,19 +65,26 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     public void onBindViewHolder(StockViewHolder holder, int position) {
 
         cursor.moveToPosition(position);
+        String quote_symbol = cursor.getString(Contract.Quote.POSITION_SYMBOL);
+        Float current_price = cursor.getFloat(Contract.Quote.POSITION_PRICE);
 
+        holder.symbol.setText(quote_symbol);
+        holder.symbol.setContentDescription(context.getString(R.string.stock_list_sybmol) + " " + quote_symbol);
 
-        holder.symbol.setText(cursor.getString(Contract.Quote.POSITION_SYMBOL));
-        holder.price.setText(dollarFormat.format(cursor.getFloat(Contract.Quote.POSITION_PRICE)));
+        String formated_price = dollarFormat.format(current_price);
+        holder.price.setText(formated_price);
+        holder.price.setContentDescription(context.getString(R.string.stock_list_current_price) + " " + formated_price);
 
 
         float rawAbsoluteChange = cursor.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
         float percentageChange = cursor.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
+        String changeType = "";
 
         if (rawAbsoluteChange > 0) {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_green);
         } else {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
+            changeType = context.getString(R.string.stock_list_change_negative);
         }
 
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
@@ -86,8 +93,10 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
             holder.change.setText(change);
+            holder.change.setContentDescription(context.getString(R.string.stock_list_absolute_change) + " " + changeType + change);
         } else {
             holder.change.setText(percentage);
+            holder.change.setContentDescription(context.getString(R.string.stock_list_percentage_change) + " " + percentage);
         }
 
 
