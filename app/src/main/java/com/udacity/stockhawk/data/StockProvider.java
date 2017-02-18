@@ -152,7 +152,18 @@ public class StockProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        int itemsUpdated = db.update(Contract.Quote.TABLE_NAME,
+                                     values,
+                                     selection,
+                                     selectionArgs);
+
+        Context context = getContext();
+        if (context != null){
+            context.getContentResolver().notifyChange(uri, null);
+        }
+        return itemsUpdated;
     }
 
     @Override
@@ -186,7 +197,5 @@ public class StockProvider extends ContentProvider {
             default:
                 return super.bulkInsert(uri, values);
         }
-
-
     }
 }

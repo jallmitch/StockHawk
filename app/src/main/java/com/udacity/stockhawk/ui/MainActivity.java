@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.sync.QuoteIntentService;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 import butterknife.BindView;
@@ -46,9 +47,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onClick(String symbol) {
-        Intent intent = new Intent(this, StockDetailReport.class);
-        intent.putExtra("STOCK_SYMBOL", symbol);
-        startActivity(intent);
+
+        Intent sync = new Intent(this, QuoteIntentService.class);
+        sync.putExtra("STOCK_SYMBOL", symbol);
+        startService(sync);
     }
 
     @Override
@@ -82,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
             }
         }).attachToRecyclerView(stockRecyclerView);
-
-
     }
 
     private boolean networkUp() {
@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             error.setText(getString(R.string.error_no_stocks));
             error.setVisibility(View.VISIBLE);
         } else {
+            swipeRefreshLayout.setRefreshing(false);
             error.setVisibility(View.GONE);
         }
     }
