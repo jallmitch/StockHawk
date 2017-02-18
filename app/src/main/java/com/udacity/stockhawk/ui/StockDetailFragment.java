@@ -53,10 +53,11 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
+        Log.d("StockDetailFragment", "On onCreateLoader");
         String stock_symbol = args.getString("STOCK_SYMBOL");
         Uri uri = Contract.Quote.makeUriForStock(stock_symbol);
-        return new CursorLoader(getActivity(), uri, null, null,  new String[]{stock_symbol}, null);
+        CursorLoader loader = new CursorLoader(getActivity(), uri, null, null,  new String[]{stock_symbol}, null);
+        return loader;
     }
 
     @Override
@@ -65,11 +66,16 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        Log.d("StockDetailFragment", "On onLoadFinished");
         if (data.moveToFirst())
         {
             List<CandleEntry> mBarEntriesCandleEntries = new ArrayList<>();
 
             String history = data.getString(Contract.Quote.POSITION_HISTORY);
+
+            if (history.isEmpty())
+                return;
+
             String symbol = data.getString(Contract.Quote.POSITION_SYMBOL);
             String mName = data.getString(Contract.Quote.POSITION_NAME);
             Float price = data.getFloat(Contract.Quote.POSITION_PRICE);
@@ -78,7 +84,6 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
             TextView stockLabel = (TextView) getActivity().findViewById(R.id.stock_symbol_textview);
             stockLabel.setText(mName);
-
 
             TextView priceLabel = (TextView) getActivity().findViewById(R.id.stock_price_textview);
             priceLabel.setText("$" + price);

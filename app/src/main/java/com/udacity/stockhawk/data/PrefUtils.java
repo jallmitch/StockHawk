@@ -2,20 +2,52 @@ package com.udacity.stockhawk.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.udacity.stockhawk.R;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
 public final class PrefUtils {
 
+    private static Set<String> mDbResults = new HashSet<>();
     private PrefUtils() {
     }
 
     public static Set<String> getStocks(Context context) {
+        Log.d("SyncTime", Calendar.getInstance().getTime().toString());
+        Cursor dbStocks = context.getContentResolver().query(Contract.Quote.URI, new String[]{"symbol"}, null, null, null);
+
+        if (dbStocks.moveToNext()){
+            mDbResults.addAll(getDBStocks(dbStocks));
+        }
+
+        Set<String> prefResults = new HashSet<>(getDefaultStocks(context));
+
+        if (mDbResults.size() < 1)
+            return prefResults;
+        else
+            return mDbResults;
+
+    }
+
+    private static Set<String> getDBStocks(Cursor cursor)
+    {
+        Set<String> dbSymbols = new HashSet<>();
+        do {
+            dbSymbols.add(cursor.getString(0));
+        }while(cursor.moveToNext());
+        cursor.close();
+        return dbSymbols;
+    }
+
+    private static Set<String> getDefaultStocks(Context context)
+    {
         String stocksKey = context.getString(R.string.pref_stocks_key);
         String initializedKey = context.getString(R.string.pref_stocks_initialized_key);
         String[] defaultStocksList = context.getResources().getStringArray(R.array.default_stocks);
@@ -40,8 +72,11 @@ public final class PrefUtils {
         Set<String> stocks = getStocks(context);
 
         if (add) {
+            mDbResults.add(symbol);
             stocks.add(symbol);
         } else {
+
+            mDbResults.remove(symbol);
             stocks.remove(symbol);
         }
 
