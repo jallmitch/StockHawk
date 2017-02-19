@@ -2,6 +2,7 @@ package com.udacity.stockhawk.ui;
 
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -94,24 +95,30 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             Float percentChange = data.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
             List<CandleEntry> barEntriesCandleEntries = new ArrayList<>();
+
+            Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Regular.ttf");
             TextView stockTV = (TextView) getActivity().findViewById(R.id.stock_symbol_textview);
             TextView priceTV = (TextView) getActivity().findViewById(R.id.stock_price_textview);
             TextView absoluteTV = (TextView) getActivity().findViewById(R.id.stock_absolute_textview);
             TextView percentTV = (TextView) getActivity().findViewById(R.id.stock_percent_textview);
 
             stockTV.setText(mName);
+            stockTV.setTypeface(face);
             stockTV.setContentDescription(mName);
 
             String priceLabel = dollarFormat.format(price);
             priceTV.setText(priceLabel);
+            priceTV.setTypeface(face);
             priceTV.setContentDescription(getContext().getString(R.string.stock_list_current_price) + " " + priceLabel);
 
             String absChange = dollarFormatWithPlus.format(absoluteChange);
             absoluteTV.setText(absChange);
+            absoluteTV.setTypeface(face);
             absoluteTV.setContentDescription(getContext().getString(R.string.stock_list_absolute_change) + " " + absChange);
 
             String percentageChange = percentageFormat.format(percentChange);
             percentTV.setText(percentageChange);
+            percentTV.setTypeface(face);
             percentTV.setContentDescription(getContext().getString(R.string.stock_list_percentage_change) + " " + percentageChange);
 
             if (absoluteChange > 0)
@@ -160,6 +167,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             mAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             mAxis.setValueFormatter(formatter);
             mAxis.setGranularity(1f);
+            mAxis.setTypeface(face);
             mCandleChart.invalidate();
         }
     }
