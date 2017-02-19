@@ -32,6 +32,16 @@
             android:authorities="com.udacity.stockhawk"
             android:exported="false" />
 
+        <receiver android:name=".widget.StockQuoteWidgetProvider">
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                       android:resource="@xml/stock_appwidget_info"
+                />
+        </receiver>
+
         <service
             android:name=".sync.QuoteJobService"
             android:enabled="true"
