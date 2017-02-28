@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.github.mikephil.charting.charts.LineChart;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 
@@ -65,22 +63,18 @@ public class StockViewFactory implements RemoteViewsService.RemoteViewsFactory
     }
 
     @Override
-    public RemoteViews getViewAt(int postion)
+    public RemoteViews getViewAt(int position)
     {
-        WidgetStockQuote stockQuote = stockQuotes.get(postion);
+        WidgetStockQuote stockQuote = stockQuotes.get(position);
         RemoteViews stockRow = new RemoteViews(context.getPackageName(),
                                                R.layout.widget_list_quote);
 
         Intent intent = new Intent();
         Bundle extras = new Bundle();
 
-        LineChart chart = new LineChart(context);
-        chart.measure(View.MeasureSpec.makeMeasureSpec(300,View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(500,View.MeasureSpec.EXACTLY));
-        chart.layout(0, 0, chart.getMeasuredWidth(), chart.getMeasuredHeight());
-
         extras.putString(StockQuoteWidgetProvider.STOCK_QUOTE, stockQuote.stockSymbol);
         intent.putExtras(extras);
+        stockRow.setOnClickFillInIntent(R.id.stock_widget, intent);
 
         stockRow.setTextViewText(R.id.stock_symbol, stockQuote.stockSymbol);
         stockRow.setTextViewText(R.id.stock_date, stockQuote.date);
@@ -92,7 +86,6 @@ public class StockViewFactory implements RemoteViewsService.RemoteViewsFactory
         stockRow.setTextViewText(R.id.stock_ask, "Ask(" + stockQuote.askSize + "):" + stockQuote.askPrice.toString() );
         stockRow.setTextViewText(R.id.stock_bid, "Bid(" + stockQuote.bidSize + "):" + stockQuote.bidPrice.toString() );
 
-        stockRow.setImageViewBitmap(R.id.widget_line_chart, chart.getChartBitmap());
         return stockRow;
     }
 
@@ -109,36 +102,13 @@ public class StockViewFactory implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public int getCount() {
-        return 0;
+
+        return stockQuotes.size();
     }
 
     @Override
     public void onDataSetChanged() {
-        Cursor cursor = context.getContentResolver().query(Contract.Quote.URI, null, null, null, null);
-        stockQuotes = new ArrayList<>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-        Calendar cal = Calendar.getInstance();
-        String date = sdf.format(cal.getTime());
-
-        while(cursor.moveToNext())
-        {
-            WidgetStockQuote quote = new WidgetStockQuote();
-            quote.stockSymbol = cursor.getString(Contract.Quote.POSITION_SYMBOL);
-            quote.price = cursor.getFloat(Contract.Quote.POSITION_PRICE);
-            quote.prevClose = cursor.getFloat(Contract.Quote.POSITION_PREVIOUS_CLOSE);
-            quote.openPrice = cursor.getFloat(Contract.Quote.POSITION_OPEN);
-            quote.highPrice = cursor.getFloat(Contract.Quote.POSITION_HIGH);
-            quote.lowPrice = cursor.getFloat(Contract.Quote.POSITION_LOW);
-            quote.askPrice = cursor.getFloat(Contract.Quote.POSITION_ASK);
-            quote.askSize = cursor.getLong(Contract.Quote.POSITION_ASK_SIZE);
-            quote.bidPrice = cursor.getFloat(Contract.Quote.POSITION_BID);
-            quote.bidSize = cursor.getLong(Contract.Quote.POSITION_BID_SIZE);
-            quote.date = date;
-
-            stockQuotes.add(quote);
-        }
-        cursor.close();
     }
 
     @Override
