@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:updatePeriodMillis="300000"
+    android:updatePeriodMillis="900000"
+    android:minWidth="@dimen/widget_horizontal_length"
+    android:minHeight="@dimen/widget_vertical_height"
     android:initialLayout="@layout/stock_widget"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"

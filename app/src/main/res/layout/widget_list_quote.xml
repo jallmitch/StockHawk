@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="@dimen/widget_vertical_height"
+    android:layout_width="@dimen/widget_horizontal_length"
+    android:background="@drawable/widget_bounds"
+
+    >
+    <GridLayout
+        android:id="@+id/stock_item_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:columnCount="5"
+        >
+        <!-- First Row -->
+        <TextView
+            android:text="@string/app_name"
+            android:textColor="@color/widget_border"
+            android:layout_gravity="start"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="5"
+            />
+        <TextView
+            android:id="@+id/stock_symbol"
+            android:layout_gravity="end"
+            android:layout_columnSpan="1"
+            android:textColor="@color/widget_border"
+            tools:text="YHOO"
+            />
+        <TextView
+            android:id="@+id/stock_date"
+            android:layout_gravity="end"
+            android:layout_columnSpan="2"
+            android:textColor="@color/widget_border"
+            tools:text="Feb 24, 2017"
+            />
+
+        <!-- Second Row -->
+        <TextView
+            android:id="@+id/stock_price"
+            android:layout_gravity="center"
+            android:layout_columnSpan="5"
+            android:textColor="@color/widget_border"
+            tools:text="$45.55"
+            />
+
+        <!-- Third row -->
+
+        <TextView
+            android:layout_gravity="end"
+            android:textColor="@color/widget_border"
+            tools:text="Prev Close:"
+            />
+
+        <TextView
+            android:id="@+id/stock_prev_close"
+            android:layout_gravity="start"
+            android:layout_columnSpan="2"
+            android:textColor="@color/widget_border"
+            tools:text="$45.41"
+            />
+
+        <TextView
+            android:layout_gravity="end"
+            android:textColor="@color/widget_border"
+            tools:text="High:"
+            />
+
+        <TextView
+            android:id="@+id/stock_day_high"
+            android:layout_gravity="start"
+            android:textColor="@color/widget_border"
+            tools:text="$45.55"
+            />
+
+        <!-- Fourth row -->
+
+        <TextView
+            android:layout_gravity="end"
+            android:textColor="@color/widget_border"
+            tools:text="Open:"
+            />
+
+        <TextView
+            android:id="@+id/stock_open"
+            android:layout_gravity="start"
+            android:layout_columnSpan="2"
+            android:textColor="@color/widget_border"
+            tools:text="$45.14"
+            />
+
+        <TextView
+            android:layout_gravity="end"
+            android:textColor="@color/widget_border"
+            tools:text="Low:"
+            />
+
+        <TextView
+            android:id="@+id/stock_day_low"
+            android:layout_gravity="start"
+            android:textColor="@color/widget_border"
+            tools:text="$44.95"
+            />
+
+        <!-- Fifth row -->
+
+        <TextView
+            android:layout_gravity="end"
+            android:textColor="@color/widget_border"
+            tools:text="Ask(300):"
+            />
+
+        <TextView
+            android:id="@+id/stock_ask"
+            android:layout_gravity="start"
+            android:layout_columnSpan="2"
+            android:textColor="@color/widget_border"
+            tools:text="$45.65"
+            />
+
+        <TextView
+            android:layout_gravity="end"
+            android:textColor="@color/widget_border"
+            tools:text="Bid(1000):"
+            />
+
+        <TextView
+            android:id="@+id/stock_bid"
+            android:layout_gravity="start"
+            android:textColor="@color/widget_border"
+            tools:text="$45.38"
+            />
+
+        <ImageView
+            android:id="@+id/widget_line_chart"
+            android:layout_columnSpan="5"
+            android:layout_gravity="fill_horizontal|fill_vertical"
+            tools:src="@drawable/chart_holder"
+            />
+    </GridLayout>
+</FrameLayout>

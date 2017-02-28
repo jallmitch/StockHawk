@@ -37,9 +37,18 @@
     <string name="activity_main_menu_item_absolute" translatable="true">Switch to show Absolute change</string>
     <string name="activity_main_menu_item_percent" translatable="true">Switch to show Percentage change</string>
 
+    <string name="stock_previous_close_label" translatable="true">Close:</string>
+    <string name="stock_high_label">High:</string>
+    <string name="stock_low_label">Low:</string>
+    <string name="stock_open_label">Open:</string>
+    <string name="stock_ask_label">Ask:</string>
+    <string name="stock_bid_label">Bid:</string>
+
     <string name="stock_list_sybmol" translatable="true">Stock Symbol</string>
     <string name="stock_list_current_price" translatable="true">Current Price</string>
     <string name="stock_list_absolute_change" translatable="true">Absolute change</string>
     <string name="stock_list_percentage_change" translatable="true">Percentage change</string>
     <string name="stock_list_change_negative" translatable="true">negative</string>
+
+    <string name="widget_title_stock" translatable="true">Stock Hawk Quotes</string>
 </resources>

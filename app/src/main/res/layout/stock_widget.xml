@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/widget_vertical_height"
+    android:layout_width="@dimen/widget_horizontal_length"
+    android:background="@drawable/widget_bounds"
 
-</GridLayout>
+    >
+    <StackView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/stock_widget"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:loopViews="true"
+        />
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@drawable/widget_bounds"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:text="Empty Text View"
+        android:textSize="20sp" />
+</FrameLayout>
