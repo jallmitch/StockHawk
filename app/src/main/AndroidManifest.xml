@@ -30,7 +30,7 @@
         <provider
             android:name=".data.StockProvider"
             android:authorities="com.udacity.stockhawk"
-            android:exported="false" />
+            android:exported="true" />
 
         <receiver
             android:name=".widget.StockQuoteWidgetProvider"
