@@ -53,7 +53,6 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, StockWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-//            widget.setRemoteAdapter(appWidgetIds[i], R.id.stock_widget, serviceIntent);
             widget.setRemoteAdapter(R.id.stock_widget, serviceIntent);
             widget.setEmptyView(R.id.stock_widget, R.id.empty_view);
 

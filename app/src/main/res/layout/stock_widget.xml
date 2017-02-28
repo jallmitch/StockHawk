@@ -2,7 +2,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="@dimen/widget_vertical_height"
     android:layout_width="@dimen/widget_horizontal_length"
-    android:background="@drawable/widget_bounds"
 
     >
     <StackView  xmlns:android="http://schemas.android.com/apk/res/android"
