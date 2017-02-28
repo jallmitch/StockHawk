@@ -21,12 +21,12 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-        if (intent.getAction().equals(STOCK_QUOTE))
-        {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-            int viewIndex = intent.getIntExtra("", 0);
-        }
+//        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
+//        if (intent.getAction().equals(STOCK_QUOTE))
+//        {
+//            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+//            int viewIndex = intent.getIntExtra("", 0);
+//        }
         super.onReceive(context, intent);
     }
 
@@ -53,7 +53,8 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, StockWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            widget.setRemoteAdapter(appWidgetIds[i], R.id.stock_widget, serviceIntent);
+//            widget.setRemoteAdapter(appWidgetIds[i], R.id.stock_widget, serviceIntent);
+            widget.setRemoteAdapter(R.id.stock_widget, serviceIntent);
             widget.setEmptyView(R.id.stock_widget, R.id.empty_view);
 
             Intent intent = new Intent(context, StockDetailFragment.class);
