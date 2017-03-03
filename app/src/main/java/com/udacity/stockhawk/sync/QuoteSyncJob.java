@@ -38,7 +38,7 @@ import static android.os.Looper.getMainLooper;
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
-    private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
+    public static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     private static final String ACTION_DATA_NOT_UPDATED = "com.udacity.stockhawk.ACTION_DATA_NOT_UPDATED";
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
@@ -89,7 +89,7 @@ public final class QuoteSyncJob {
                 }
                 else
                 {
-                    ContentValues stockCVs = addMinimumStockDetails(stock);
+                    ContentValues stockCVs = addStockDetails(stock);
                     quoteCVs.add(stockCVs);
 
                     if (newStocks.contains(symbol)){
@@ -147,6 +147,14 @@ public final class QuoteSyncJob {
 
             String name = stock.getName();
             float price = quote.getPrice().floatValue();
+            float prevClose = quote.getPreviousClose().floatValue();
+            float open = quote.getOpen().floatValue();
+            float dayHigh = quote.getDayHigh().floatValue();
+            float dayLow = quote.getDayLow().floatValue();
+            float askPrice = quote.getAsk().floatValue();
+            long askSize = quote.getAskSize();
+            float bid = quote.getBid().floatValue();
+            long bidSize = quote.getBidSize();
             float change = quote.getChange().floatValue();
             float percentChange = quote.getChangeInPercent().floatValue();
 
@@ -170,6 +178,14 @@ public final class QuoteSyncJob {
             quoteCV.put(Contract.Quote.COLUMN_SYMBOL, stockSymbol);
             quoteCV.put(Contract.Quote.COLUMN_NAME, name);
             quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
+            quoteCV.put(Contract.Quote.COLUMN_PREVIOUS_CLOSE, prevClose);
+            quoteCV.put(Contract.Quote.COLUMN_OPEN, open);
+            quoteCV.put(Contract.Quote.COLUMN_HIGH, dayHigh);
+            quoteCV.put(Contract.Quote.COLUMN_LOW, dayLow);
+            quoteCV.put(Contract.Quote.COLUMN_ASK, askPrice);
+            quoteCV.put(Contract.Quote.COLUMN_ASK_SIZE, askSize);
+            quoteCV.put(Contract.Quote.COLUMN_BID, bid);
+            quoteCV.put(Contract.Quote.COLUMN_BID_SIZE, bidSize);
             quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
             quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
             quoteCV.put(Contract.Quote.COLUMN_HISTORY, historyBuilder.toString());
@@ -215,12 +231,20 @@ public final class QuoteSyncJob {
         return values;
     }
 
-    static ContentValues addMinimumStockDetails(Stock stock)
+    static ContentValues addStockDetails(Stock stock)
     {
         StockQuote quote = stock.getQuote();
         String symbol = stock.getSymbol();
         String name = stock.getName();
         float price = quote.getPrice().floatValue();
+        float prevClose = quote.getPreviousClose().floatValue();
+        float open = quote.getOpen().floatValue();
+        float dayHigh = quote.getDayHigh().floatValue();
+        float dayLow = quote.getDayLow().floatValue();
+        float askPrice = quote.getAsk().floatValue();
+        long askSize = quote.getAskSize();
+        float bid = quote.getBid().floatValue();
+        long bidSize = quote.getBidSize();
         float change = quote.getChange().floatValue();
         float percentChange = quote.getChangeInPercent().floatValue();
 
@@ -228,6 +252,14 @@ public final class QuoteSyncJob {
         quoteCV.put(Contract.Quote.COLUMN_SYMBOL, symbol);
         quoteCV.put(Contract.Quote.COLUMN_NAME, name);
         quoteCV.put(Contract.Quote.COLUMN_PRICE, price);
+        quoteCV.put(Contract.Quote.COLUMN_PREVIOUS_CLOSE, prevClose);
+        quoteCV.put(Contract.Quote.COLUMN_OPEN, open);
+        quoteCV.put(Contract.Quote.COLUMN_HIGH, dayHigh);
+        quoteCV.put(Contract.Quote.COLUMN_LOW, dayLow);
+        quoteCV.put(Contract.Quote.COLUMN_ASK, askPrice);
+        quoteCV.put(Contract.Quote.COLUMN_ASK_SIZE, askSize);
+        quoteCV.put(Contract.Quote.COLUMN_BID, bid);
+        quoteCV.put(Contract.Quote.COLUMN_BID_SIZE, bidSize);
         quoteCV.put(Contract.Quote.COLUMN_PERCENTAGE_CHANGE, percentChange);
         quoteCV.put(Contract.Quote.COLUMN_ABSOLUTE_CHANGE, change);
         quoteCV.put(Contract.Quote.COLUMN_PRICE_MODIFIED, Calendar.getInstance().getTimeInMillis());

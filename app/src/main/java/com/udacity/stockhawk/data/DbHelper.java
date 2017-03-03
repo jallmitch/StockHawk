@@ -25,6 +25,14 @@ class DbHelper extends SQLiteOpenHelper {
                 + Quote.COLUMN_SYMBOL + " TEXT NOT NULL, "
                 + Quote.COLUMN_NAME + " TEXT NOT NULL, "
                 + Quote.COLUMN_PRICE + " REAL NOT NULL, "
+                + Quote.COLUMN_PREVIOUS_CLOSE + " REAL NOT NULL, "
+                + Quote.COLUMN_OPEN + " REAL NOT NULL, "
+                + Quote.COLUMN_HIGH + " REAL NOT NULL, "
+                + Quote.COLUMN_LOW + " REAL NOT NULL, "
+                + Quote.COLUMN_ASK + " REAL NOT NULL, "
+                + Quote.COLUMN_ASK_SIZE + " REAL NOT NULL, "
+                + Quote.COLUMN_BID + " REAL NOT NULL, "
+                + Quote.COLUMN_BID_SIZE + " REAL NOT NULL, "
                 + Quote.COLUMN_ABSOLUTE_CHANGE + " REAL NOT NULL, "
                 + Quote.COLUMN_PERCENTAGE_CHANGE + " REAL NOT NULL, "
                 + Quote.COLUMN_HISTORY + " TEXT, "
@@ -33,7 +41,6 @@ class DbHelper extends SQLiteOpenHelper {
                 + "UNIQUE (" + Quote.COLUMN_SYMBOL + ") ON CONFLICT REPLACE);";
 
         db.execSQL(builder);
-
     }
 
     @Override

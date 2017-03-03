@@ -36,7 +36,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
 
         dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
         dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
-        dollarFormatWithPlus.setPositivePrefix("+$");
         percentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
         percentageFormat.setMaximumFractionDigits(2);
         percentageFormat.setMinimumFractionDigits(2);
@@ -71,8 +70,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         String quote_symbol = cursor.getString(Contract.Quote.POSITION_SYMBOL);
         Float current_price = cursor.getFloat(Contract.Quote.POSITION_PRICE);
 
-        holder.symbol.setText(quote_symbol);
         holder.symbol.setTypeface(face);
+        holder.symbol.setText(quote_symbol);
         holder.symbol.setContentDescription(context.getString(R.string.stock_list_sybmol) + " " + quote_symbol);
 
         String formated_price = dollarFormat.format(current_price);
@@ -88,13 +87,16 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         holder.change.setTypeface(face);
         if (rawAbsoluteChange > 0) {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_green);
+            dollarFormatWithPlus.setPositivePrefix("+$");
         } else {
             holder.change.setBackgroundResource(R.drawable.percent_change_pill_red);
+            dollarFormatWithPlus.setPositivePrefix("-$");
             changeType = context.getString(R.string.stock_list_change_negative);
         }
 
         String change = dollarFormatWithPlus.format(rawAbsoluteChange);
         String percentage = percentageFormat.format(percentageChange / 100);
+
 
         if (PrefUtils.getDisplayMode(context)
                 .equals(context.getString(R.string.pref_display_mode_absolute_key))) {
@@ -104,8 +106,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             holder.change.setText(percentage);
             holder.change.setContentDescription(context.getString(R.string.stock_list_percentage_change) + " " + percentage);
         }
-
-
     }
 
     @Override

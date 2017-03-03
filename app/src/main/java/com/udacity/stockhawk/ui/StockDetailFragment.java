@@ -55,7 +55,6 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         dollarFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
         dollarFormatWithPlus = (DecimalFormat) NumberFormat.getCurrencyInstance(Locale.US);
-        dollarFormatWithPlus.setPositivePrefix("+$");
         percentageFormat = (DecimalFormat) NumberFormat.getPercentInstance(Locale.getDefault());
         percentageFormat.setMaximumFractionDigits(2);
         percentageFormat.setMinimumFractionDigits(2);
@@ -66,7 +65,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String stock_symbol = args.getString("STOCK_SYMBOL");
+        String stock_symbol = args.getString(MainActivity.STOCK_QUOTE);
         Uri uri = Contract.Quote.makeUriForStock(stock_symbol);
         return new CursorLoader(getActivity(),
                                uri,
@@ -88,49 +87,100 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             if (history.isEmpty())
                 return;
 
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+            Calendar cal = Calendar.getInstance();
+            String date = sdf.format(cal.getTime());
+
             String symbol = data.getString(Contract.Quote.POSITION_SYMBOL);
             String mName = data.getString(Contract.Quote.POSITION_NAME);
             Float price = data.getFloat(Contract.Quote.POSITION_PRICE);
+            Float prevClose = data.getFloat(Contract.Quote.POSITION_PREVIOUS_CLOSE);
+            Float open = data.getFloat(Contract.Quote.POSITION_OPEN);
+            Float dayHigh = data.getFloat(Contract.Quote.POSITION_HIGH);
+            Float dayLow = data.getFloat(Contract.Quote.POSITION_LOW);
+            Float askPrice = data.getFloat(Contract.Quote.POSITION_ASK);
+            Long askSize = data.getLong(Contract.Quote.POSITION_ASK_SIZE);
+            Float bidPrice = data.getFloat(Contract.Quote.POSITION_BID);
+            Long bidSize = data.getLong(Contract.Quote.POSITION_BID_SIZE);
             Float absoluteChange = data.getFloat(Contract.Quote.POSITION_ABSOLUTE_CHANGE);
             Float percentChange = data.getFloat(Contract.Quote.POSITION_PERCENTAGE_CHANGE);
 
             List<CandleEntry> barEntriesCandleEntries = new ArrayList<>();
 
             Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "Roboto-Regular.ttf");
-            TextView stockTV = (TextView) getActivity().findViewById(R.id.stock_symbol_textview);
-            TextView priceTV = (TextView) getActivity().findViewById(R.id.stock_price_textview);
-            TextView absoluteTV = (TextView) getActivity().findViewById(R.id.stock_absolute_textview);
-            TextView percentTV = (TextView) getActivity().findViewById(R.id.stock_percent_textview);
+            TextView dateTV = (TextView) getActivity().findViewById(R.id.stock_date);
+            TextView stockTV = (TextView) getActivity().findViewById(R.id.stock_symbol);
+            TextView priceTV = (TextView) getActivity().findViewById(R.id.stock_price);
+            TextView prevCloseTV = (TextView) getActivity().findViewById(R.id.stock_prev_close);
+            TextView openTV = (TextView) getActivity().findViewById(R.id.stock_open);
+            TextView dayHighTV = (TextView) getActivity().findViewById(R.id.stock_day_high);
+            TextView dayLowTV = (TextView) getActivity().findViewById(R.id.stock_day_low);
+            TextView askPriceTV = (TextView) getActivity().findViewById(R.id.stock_ask);
+            TextView bidPriceTV = (TextView) getActivity().findViewById(R.id.stock_bid);
 
             stockTV.setText(mName);
+            stockTV.setTextSize(20f);
             stockTV.setTypeface(face);
             stockTV.setContentDescription(mName);
 
+            dateTV.setText(date);
+            dateTV.setTextSize(20f);
+
             String priceLabel = dollarFormat.format(price);
-            priceTV.setText(priceLabel);
+
+            if (absoluteChange > 0)
+                dollarFormatWithPlus.setPositivePrefix("+$");
+            else if (absoluteChange < 0)
+                dollarFormatWithPlus.setPositivePrefix("-$");
+
+            String absChange = dollarFormatWithPlus.format(absoluteChange);
+            priceTV.setText(priceLabel + "  (" + absChange + ")");
+            priceTV.setTextSize(24f);
             priceTV.setTypeface(face);
             priceTV.setContentDescription(getContext().getString(R.string.stock_list_current_price) + " " + priceLabel);
 
-            String absChange = dollarFormatWithPlus.format(absoluteChange);
-            absoluteTV.setText(absChange);
-            absoluteTV.setTypeface(face);
-            absoluteTV.setContentDescription(getContext().getString(R.string.stock_list_absolute_change) + " " + absChange);
-
-            String percentageChange = percentageFormat.format(percentChange);
-            percentTV.setText(percentageChange);
-            percentTV.setTypeface(face);
-            percentTV.setContentDescription(getContext().getString(R.string.stock_list_percentage_change) + " " + percentageChange);
-
             if (absoluteChange > 0)
-                absoluteTV.setTextColor(Color.GREEN);
+                priceTV.setTextColor(Color.GREEN);
             else
-                absoluteTV.setTextColor(Color.RED) ;
+                priceTV.setTextColor(Color.RED) ;
 
-            if (percentChange > 0)
-                percentTV.setTextColor(Color.GREEN);
-            else
-                percentTV.setTextColor(Color.RED) ;
+            String closeLabel = dollarFormat.format(prevClose);
+            prevCloseTV.setText(getContext().getString(R.string.stock_previous_close_label) + closeLabel);
+            prevCloseTV.setTextSize(20f);
+            prevCloseTV.setTypeface(face);
+            prevCloseTV.setContentDescription("Previous Close" + " " + priceLabel);
 
+            String openLabel = dollarFormat.format(open);
+            openTV.setText(getContext().getString(R.string.stock_open_label) + openLabel);
+            openTV.setTextSize(20f);
+            openTV.setTypeface(face);
+            openTV.setContentDescription("Open" + " " + openLabel);
+
+            String highLabel = dollarFormat.format(dayHigh);
+            dayHighTV.setText(getContext().getString(R.string.stock_high_label) + highLabel);
+            dayHighTV.setTextSize(20f);
+            dayHighTV.setTypeface(face);
+            dayHighTV.setContentDescription("High" + " " + highLabel);
+
+            String lowLabel = dollarFormat.format(dayLow);
+            dayLowTV.setText(getContext().getString(R.string.stock_low_label) + lowLabel);
+            dayLowTV.setTextSize(20f);
+            dayLowTV.setTypeface(face);
+            dayLowTV.setContentDescription("Low" + " " + lowLabel);
+
+            String askLabel = dollarFormat.format(askPrice);
+            String askSizeLabel = askSize.toString();
+            askPriceTV.setText(getContext().getString(R.string.stock_ask_label) + askLabel + " X " + askSizeLabel);
+            askPriceTV.setTextSize(20f);
+            askPriceTV.setTypeface(face);
+            askPriceTV.setContentDescription("Ask Price" + " " + askLabel + " by " + askSizeLabel);
+
+            String bidLabel = dollarFormat.format(bidPrice);
+            String bidSizeLabel = bidSize.toString();
+            bidPriceTV.setText(getContext().getString(R.string.stock_bid_label) + bidLabel + " X " + bidSizeLabel);
+            bidPriceTV.setTextSize(20f);
+            bidPriceTV.setTypeface(face);
+            bidPriceTV.setContentDescription("Bid Price" + " " + bidLabel + " by " + bidSizeLabel);
 
             Map<Long, CandleEntry> quoteMap = new TreeMap<>(parseHistory(history));
             List<String> dates = new ArrayList<>();

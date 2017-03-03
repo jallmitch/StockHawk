@@ -3,7 +3,7 @@
     android:id="@+id/fragment_stock_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/label_padding_margin"
+    android:padding="@dimen/label_padding_margin"
     android:columnCount="1"
     android:background="@color/widget_border"
     tools:context="com.udacity.stockhawk.ui.StockDetailFragment">
@@ -12,39 +12,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_padding_margin"
+        android:padding="@dimen/label_padding_margin"
         android:orientation="horizontal"
         >
         <TextView
             android:id="@+id/stock_symbol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            tools:text="Yahoo! Inc."
+            />
+        <TextView
+            android:id="@+id/stock_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
             />
         <TextView
             android:id="@+id/stock_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Mar 01, 2017"
+            tools:text="Feb 27, 2017"
             />
     </LinearLayout>
     <!-- Second Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_padding_margin"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/stock_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-    </LinearLayout>
-    <!-- Third row -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,12 +59,25 @@
             />
 
         <TextView
+            android:id="@+id/stock_ask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
             android:id="@+id/stock_day_high"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
     </LinearLayout>
-    <!-- Fourth row -->
+    <!-- Third row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,27 +102,10 @@
             />
 
         <TextView
-            android:id="@+id/stock_day_low"
+            android:id="@+id/stock_bid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-    </LinearLayout>
-    <!-- Fifth row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_padding_margin"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-
-        <TextView
-            android:id="@+id/stock_ask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="3"
             />
 
@@ -129,11 +115,12 @@
             />
 
         <TextView
-            android:id="@+id/stock_bid"
+            android:id="@+id/stock_day_low"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
     </LinearLayout>
+    <!-- Fourth row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -142,10 +129,9 @@
         >
     <com.github.mikephil.charting.charts.CandleStickChart
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_chart"
+        android:layout_height="@dimen/small_land_chart"
         android:id="@+id/stock_chart"
         android:layout_margin="@dimen/label_padding_margin"
-
         >
         </com.github.mikephil.charting.charts.CandleStickChart>
     </LinearLayout>
