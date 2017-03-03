@@ -65,7 +65,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String stock_symbol = args.getString("STOCK_SYMBOL");
+        String stock_symbol = args.getString(MainActivity.STOCK_QUOTE);
         Uri uri = Contract.Quote.makeUriForStock(stock_symbol);
         return new CursorLoader(getActivity(),
                                uri,
@@ -181,29 +181,6 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             bidPriceTV.setTextSize(20f);
             bidPriceTV.setTypeface(face);
             bidPriceTV.setContentDescription("Bid Price" + " " + bidLabel + " by " + bidSizeLabel);
-
-
-
-//            String absChange = dollarFormatWithPlus.format(absoluteChange);
-//            absoluteTV.setText(absChange);
-//            absoluteTV.setTypeface(face);
-//            absoluteTV.setContentDescription(getContext().getString(R.string.stock_list_absolute_change) + " " + absChange);
-//
-//            String percentageChange = percentageFormat.format(percentChange);
-//            percentTV.setText(percentageChange);
-//            percentTV.setTypeface(face);
-//            percentTV.setContentDescription(getContext().getString(R.string.stock_list_percentage_change) + " " + percentageChange);
-
-//            if (absoluteChange > 0)
-//                absoluteTV.setTextColor(Color.GREEN);
-//            else
-//                absoluteTV.setTextColor(Color.RED) ;
-//
-//            if (percentChange > 0)
-//                percentTV.setTextColor(Color.GREEN);
-//            else
-//                percentTV.setTextColor(Color.RED) ;
-
 
             Map<Long, CandleEntry> quoteMap = new TreeMap<>(parseHistory(history));
             List<String> dates = new ArrayList<>();

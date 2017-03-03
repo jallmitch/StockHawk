@@ -70,8 +70,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         String quote_symbol = cursor.getString(Contract.Quote.POSITION_SYMBOL);
         Float current_price = cursor.getFloat(Contract.Quote.POSITION_PRICE);
 
-        holder.symbol.setText(quote_symbol);
         holder.symbol.setTypeface(face);
+        holder.symbol.setText(quote_symbol);
         holder.symbol.setContentDescription(context.getString(R.string.stock_list_sybmol) + " " + quote_symbol);
 
         String formated_price = dollarFormat.format(current_price);

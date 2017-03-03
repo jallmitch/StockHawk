@@ -5,12 +5,10 @@
     <dimen name="horizontal_margin">16dp</dimen>
     <dimen name="vertical_margin">16dp</dimen>
 
-    <dimen name="widget_horizontal_length">350dp</dimen>
-    <dimen name="widget_vertical_height">350dp</dimen>
+    <dimen name="widget_horizontal_length">250dp</dimen>
+    <dimen name="widget_vertical_height">200dp</dimen>
 
     <dimen name="small_land_chart">150dp</dimen>
     <dimen name="small_chart">250dp</dimen>
     <dimen name="large_chart">300dp</dimen>
-
-
 </resources>

@@ -6,10 +6,12 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
-import com.udacity.stockhawk.ui.StockDetailFragment;
+import com.udacity.stockhawk.sync.QuoteIntentService;
+import com.udacity.stockhawk.ui.MainActivity;
 
 /**
  * Created by jesse.mitchell on 2/18/2017.
@@ -18,21 +20,25 @@ import com.udacity.stockhawk.ui.StockDetailFragment;
 public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
     public static String STOCK_QUOTE = "widget.stock.quote";
+    public static String EXTRA_STRING_ID = "widget.stock.quote_symbol";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-//        if (intent.getAction().equals(STOCK_QUOTE))
-//        {
-//            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
-//            int viewIndex = intent.getIntExtra("", 0);
-//        }
+        Log.d("WidgetProvider", intent.getAction());
+        if (intent.getAction().equals(STOCK_QUOTE))
+        {
+            String symbol = intent.getExtras().getString(EXTRA_STRING_ID);
+            Intent sync = new Intent(context, QuoteIntentService.class);
+            sync.putExtra(MainActivity.STOCK_QUOTE, symbol);
+            context.startService(sync);
+        }
         super.onReceive(context, intent);
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
+        AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetIds, R.id.stock_widget);
     }
 
     @Override
@@ -47,25 +53,26 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
         for (int i = 0; i < appWidgetIds.length; i++) {
-            RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.stock_widget);
+            RemoteViews widgetView = new RemoteViews(context.getPackageName(), R.layout.stock_widget);
 
             Intent serviceIntent = new Intent(context, StockWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            widget.setRemoteAdapter(R.id.stock_widget, serviceIntent);
-            widget.setEmptyView(R.id.stock_widget, R.id.empty_view);
+            widgetView.setRemoteAdapter(R.id.stock_widget, serviceIntent);
+            widgetView.setEmptyView(R.id.stock_widget, R.id.empty_view);
 
-            Intent intent = new Intent(context, StockDetailFragment.class);
-            intent.setAction(STOCK_QUOTE);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+            Intent onItemClick = new Intent(context, StockQuoteWidgetProvider.class);
+            onItemClick.setAction(STOCK_QUOTE);
+            onItemClick.setData(Uri.parse(onItemClick.toUri(Intent.URI_INTENT_SCHEME)));
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-            widget.setPendingIntentTemplate(R.id.stock_widget, pendingIntent);
+            PendingIntent onClickPendingIntent = PendingIntent.getBroadcast(context, 0, onItemClick, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
+            widgetView.setPendingIntentTemplate(R.id.stock_widget, onClickPendingIntent);
+            appWidgetManager.updateAppWidget(appWidgetIds[i], widgetView);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.stock_widget);
     }
 }

@@ -7,7 +7,7 @@
     >
         <GridLayout
             android:id="@+id/stock_item_widget"
-            android:layout_width="275dp"
+            android:layout_width="250dp"
             android:layout_height="150dp"
             android:padding="4dp"
             android:columnCount="4"
@@ -15,14 +15,14 @@
             <!-- First Row -->
             <TextView
                 android:id="@+id/stock_symbol"
-                android:layout_gravity="start"
+                android:layout_gravity="end"
                 android:layout_columnSpan="2"
                 android:textColor="@color/widget_border"
                 tools:text="YHOO"
                 />
             <TextView
                 android:id="@+id/stock_date"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
                 android:layout_columnSpan="2"
                 android:textColor="@color/widget_border"
                 tools:text="Feb 24, 2017"
@@ -41,45 +41,47 @@
             <!-- Third row -->
 
             <TextView
-                android:layout_gravity="start"
+                android:id="@+id/stock_prev_close"
+                android:layout_gravity="end"
+                android:textColor="@color/widget_border"
+                tools:text="$45.41"
+                />
+            <TextView
+                android:layout_gravity="end"
                 android:textColor="@color/widget_border"
                 android:text="@string/stock_previous_close_label"
                 />
 
             <TextView
-                android:id="@+id/stock_prev_close"
+                android:id="@+id/stock_day_high"
                 android:layout_gravity="start"
                 android:layout_columnWeight="3"
                 android:textColor="@color/widget_border"
-                tools:text="$45.41"
+                tools:text="$45.55"
                 />
-
             <TextView
                 android:layout_gravity="end"
                 android:textColor="@color/widget_border"
                 android:text="@string/stock_high_label"
                 />
-
+            <!-- Fourth row -->
             <TextView
-                android:id="@+id/stock_day_high"
+                android:id="@+id/stock_open"
                 android:layout_gravity="end"
                 android:textColor="@color/widget_border"
-                tools:text="$45.55"
+                tools:text="$45.14"
                 />
-
-            <!-- Fourth row -->
-
             <TextView
-                android:layout_gravity="start"
+                android:layout_gravity="end"
                 android:textColor="@color/widget_border"
                 android:text="@string/stock_open_label"
                 />
 
             <TextView
-                android:id="@+id/stock_open"
+                android:id="@+id/stock_day_low"
                 android:layout_gravity="start"
                 android:textColor="@color/widget_border"
-                tools:text="$45.14"
+                tools:text="$44.95"
                 />
 
             <TextView
@@ -88,41 +90,35 @@
                 android:text="@string/stock_low_label"
                 />
 
-            <TextView
-                android:id="@+id/stock_day_low"
-                android:layout_gravity="end"
-                android:textColor="@color/widget_border"
-                tools:text="$44.95"
-                />
 
             <!-- Fifth row -->
 
             <TextView
+                android:id="@+id/stock_ask"
+                android:layout_gravity="end"
+                android:textColor="@color/widget_border"
+                tools:text="$45.65"
+                />
+            <TextView
                 android:id="@+id/ask_size"
-                android:layout_gravity="start"
+                android:layout_gravity="end"
                 android:textColor="@color/widget_border"
                 android:text="@string/stock_ask_label"
                 />
 
             <TextView
-                android:id="@+id/stock_ask"
+                android:id="@+id/stock_bid"
                 android:layout_gravity="start"
                 android:textColor="@color/widget_border"
-                tools:text="$45.65"
+                tools:text="$45.38"
                 />
 
             <TextView
                 android:id="@+id/bid_size"
-                android:layout_gravity="end"
+                android:layout_gravity="start"
                 android:textColor="@color/widget_border"
                 android:text="@string/stock_bid_label"
                 />
 
-            <TextView
-                android:id="@+id/stock_bid"
-                android:layout_gravity="end"
-                android:textColor="@color/widget_border"
-                tools:text="$45.38"
-                />
         </GridLayout>
 </FrameLayout>

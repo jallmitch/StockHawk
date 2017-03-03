@@ -7,6 +7,7 @@ package com.udacity.stockhawk.widget;
 public class WidgetStockQuote
 {
     public String stockSymbol;
+    public String stockName;
     public Float price;
     public String date;
     public Float prevClose;
