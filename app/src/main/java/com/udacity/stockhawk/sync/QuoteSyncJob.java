@@ -12,8 +12,10 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
+import com.udacity.stockhawk.widget.StockQuoteWidgetProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,14 +76,14 @@ public final class QuoteSyncJob {
             while (iterator.hasNext()) {
                 final String symbol = iterator.next();
                 Stock stock = newQuotes.get(symbol);
-                if  (stock.getName() == null)
+                if  (stock == null || stock.getName() == null)
                 {
                     Handler mHandler = new Handler(getMainLooper());
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             PrefUtils.removeStock(context, symbol);
-                            Toast.makeText(context, "The symbol:" + symbol + " does not exist or does not have any historical data. Please confirm the symbol is correct.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.toast_stock_does_not_exist, symbol), Toast.LENGTH_SHORT).show();
                             Intent dataUpdatedIntent = new Intent(ACTION_DATA_NOT_UPDATED);
                             context.sendBroadcast(dataUpdatedIntent);
                         }
@@ -101,24 +103,22 @@ public final class QuoteSyncJob {
                         context.getContentResolver()
                                 .update(Contract.Quote.URI,
                                         stockCVs,
-                                        "symbol=?",
+                                        context.getString(R.string.symbol_query),
                                         new String[]{symbol});
                     }
                 }
+
             }
-
-            Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
+            //http://stackoverflow.com/questions/3455123/programmatically-update-widget-from-activity-service-receiver
+            Intent dataUpdatedIntent = new Intent(context, StockQuoteWidgetProvider.class);
+            dataUpdatedIntent.setAction(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
-
         }catch (IOException e)
         {
-            Timber.e(e, "Error fetching stock quotes");
         }
     }
 
     public static void getQuoteHistory(final Context context, String stockSymbol) {
-
-        Timber.d("Running sync job");
 
         Calendar from = Calendar.getInstance();
         Calendar to = Calendar.getInstance();
@@ -129,8 +129,8 @@ public final class QuoteSyncJob {
             Stock stock = YahooFinance.get(stockSymbol);
             Map<String, Object> quoteHistory = hasHistory(context, stock.getSymbol());
 
-            String history = (String)quoteHistory.get("History");
-            Long lastModified = (Long)quoteHistory.get("LastModified");
+            String history = (String)quoteHistory.get(Contract.Quote.COLUMN_HISTORY);
+            Long lastModified = (Long)quoteHistory.get(Contract.Quote.COLUMN_HISTORY_MODIFIED);
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(lastModified);
             int lastModifiedWeek = cal.get(Calendar.WEEK_OF_YEAR);
@@ -192,13 +192,12 @@ public final class QuoteSyncJob {
             quoteCV.put(Contract.Quote.COLUMN_PRICE_MODIFIED, Calendar.getInstance().getTimeInMillis());
             quoteCV.put(Contract.Quote.COLUMN_HISTORY_MODIFIED, Calendar.getInstance().getTimeInMillis());
 
-            context.getContentResolver().update(Contract.Quote.URI, quoteCV, "symbol=?",new String[]{stockSymbol});
+            context.getContentResolver().update(Contract.Quote.URI, quoteCV, context.getString(R.string.symbol_query),new String[]{stockSymbol});
 
             Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED);
             context.sendBroadcast(dataUpdatedIntent);
 
         } catch (IOException exception) {
-            Timber.e(exception, "Error fetching stock quotes");
         }
     }
 
@@ -207,7 +206,7 @@ public final class QuoteSyncJob {
         return context.getContentResolver()
                 .query(Contract.Quote.URI,
                         new String[]{Contract.Quote.COLUMN_SYMBOL},
-                        Contract.Quote.COLUMN_SYMBOL +"=?",
+                        context.getString(R.string.symbol_query),
                         new String[]{symbol},
                         null)
                 .moveToNext();
@@ -219,14 +218,14 @@ public final class QuoteSyncJob {
                 .query(Contract.Quote.URI,
                         new String[]{Contract.Quote.COLUMN_HISTORY,
                                      Contract.Quote.COLUMN_HISTORY_MODIFIED},
-                        Contract.Quote.COLUMN_SYMBOL +"=?",
+                        context.getString(R.string.symbol_query),
                         new String[]{symbol},
                         null);
         query.moveToNext();
 
         Map<String, Object> values = new HashMap<>();
-        values.put("History", query.getString(0));
-        values.put("LastModified", query.getLong(1));
+        values.put(Contract.Quote.COLUMN_HISTORY, query.getString(0));
+        values.put(Contract.Quote.COLUMN_HISTORY_MODIFIED, query.getLong(1));
         query.close();
         return values;
     }
@@ -268,11 +267,7 @@ public final class QuoteSyncJob {
     }
 
     private static void schedulePeriodic(Context context) {
-        Timber.d("Scheduling a periodic task");
-
-
         JobInfo.Builder builder = new JobInfo.Builder(PERIODIC_ID, new ComponentName(context, QuoteJobService.class));
-
 
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(PERIOD)
@@ -292,7 +287,6 @@ public final class QuoteSyncJob {
     }
 
     public static synchronized void syncImmediately(Context context) {
-
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -311,8 +305,6 @@ public final class QuoteSyncJob {
             JobScheduler scheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
             scheduler.schedule(builder.build());
-
-
         }
     }
 

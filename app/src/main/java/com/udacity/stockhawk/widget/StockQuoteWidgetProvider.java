@@ -3,15 +3,15 @@ package com.udacity.stockhawk.widget;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.sync.QuoteIntentService;
-import com.udacity.stockhawk.ui.MainActivity;
+import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 /**
  * Created by jesse.mitchell on 2/18/2017.
@@ -19,19 +19,26 @@ import com.udacity.stockhawk.ui.MainActivity;
 
 public class StockQuoteWidgetProvider extends AppWidgetProvider {
 
-    public static String STOCK_QUOTE = "widget.stock.quote";
+    public static String WIDGET_STOCK_QUOTE = "widget.stock.quote";
     public static String EXTRA_STRING_ID = "widget.stock.quote_symbol";
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("WidgetProvider", intent.getAction());
-        if (intent.getAction().equals(STOCK_QUOTE))
+        if (intent.getAction().equals(WIDGET_STOCK_QUOTE))
         {
             String symbol = intent.getExtras().getString(EXTRA_STRING_ID);
             Intent sync = new Intent(context, QuoteIntentService.class);
-            sync.putExtra(MainActivity.STOCK_QUOTE, symbol);
+            sync.putExtra(context.getString(R.string.STOCK_QUOTE), symbol);
             context.startService(sync);
         }
+
+        if(intent.getAction().equalsIgnoreCase(QuoteSyncJob.ACTION_DATA_UPDATED))
+        {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName compName = new ComponentName(context, StockQuoteWidgetProvider.class);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(compName), R.id.stock_widget);
+        }
+
         super.onReceive(context, intent);
     }
 
@@ -64,7 +71,7 @@ public class StockQuoteWidgetProvider extends AppWidgetProvider {
             widgetView.setEmptyView(R.id.stock_widget, R.id.empty_view);
 
             Intent onItemClick = new Intent(context, StockQuoteWidgetProvider.class);
-            onItemClick.setAction(STOCK_QUOTE);
+            onItemClick.setAction(WIDGET_STOCK_QUOTE);
             onItemClick.setData(Uri.parse(onItemClick.toUri(Intent.URI_INTENT_SCHEME)));
 
             PendingIntent onClickPendingIntent = PendingIntent.getBroadcast(context, 0, onItemClick, PendingIntent.FLAG_UPDATE_CURRENT);
