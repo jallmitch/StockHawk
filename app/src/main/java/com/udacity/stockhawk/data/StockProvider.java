@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.udacity.stockhawk.R;
+
 
 public class StockProvider extends ContentProvider {
 
@@ -57,7 +59,7 @@ public class StockProvider extends ContentProvider {
                 returnCursor = db.query(
                         Contract.Quote.TABLE_NAME,
                         projection,
-                        Contract.Quote.COLUMN_SYMBOL + " = ?",
+                        getContext().getString(R.string.symbol_query),
                         new String[]{Contract.Quote.getStockFromUri(uri)},
                         null,
                         null,
@@ -66,7 +68,7 @@ public class StockProvider extends ContentProvider {
 
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown URI:" + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_URI, uri));
         }
 
         Context context = getContext();
@@ -99,7 +101,7 @@ public class StockProvider extends ContentProvider {
                 returnUri = Contract.Quote.URI;
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown URI:" + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_URI, uri));
         }
 
         Context context = getContext();
@@ -137,7 +139,7 @@ public class StockProvider extends ContentProvider {
                 );
                 break;
             default:
-                throw new UnsupportedOperationException("Unknown URI:" + uri);
+                throw new UnsupportedOperationException(getContext().getString(R.string.unknown_URI, uri));
         }
 
         if (rowsDeleted != 0) {

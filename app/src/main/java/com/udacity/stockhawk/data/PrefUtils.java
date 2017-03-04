@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.udacity.stockhawk.R;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +18,7 @@ public final class PrefUtils {
     }
 
     public static Set<String> getStocks(Context context) {
-        Log.d("SyncTime", Calendar.getInstance().getTime().toString());
-        Cursor dbStocks = context.getContentResolver().query(Contract.Quote.URI, new String[]{"symbol"}, null, null, null);
+        Cursor dbStocks = context.getContentResolver().query(Contract.Quote.URI, new String[]{Contract.Quote.COLUMN_SYMBOL}, null, null, null);
 
         if (dbStocks.moveToNext()){
             mDbResults.addAll(getDBStocks(dbStocks));
@@ -84,6 +81,7 @@ public final class PrefUtils {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putStringSet(key, stocks);
         editor.apply();
+
     }
 
     public static void addStock(Context context, String symbol) {

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Stock Hawk</string>
+    <string name="STOCK_QUOTE">STOCK QUOTE</string>
+    <string name="date_format">MMM dd, yyyy</string>
 
     <string name="pref_stocks_initialized_key" translatable="false">initialized</string>
 
@@ -29,6 +31,7 @@
 
     <string name="toast_stock_added_no_connectivity">Symbol %s added. Will refresh when network available.</string>
     <string name="toast_no_connectivity">Will refresh when network available.</string>
+    <string name="toast_stock_does_not_exist">The symbol %s does not exist or does not have any historical data. Please confirm the symbol is correct.</string>
 
     <!-- UI Content Descriptions -->
     <string name="activity_main_swipe_refresh" translatable="true">Swipe to refresh.</string>
@@ -37,19 +40,31 @@
     <string name="activity_main_menu_item_absolute" translatable="true">Switch to show Absolute change</string>
     <string name="activity_main_menu_item_percent" translatable="true">Switch to show Percentage change</string>
 
-    <string name="stock_previous_close_label" translatable="true">Prev Close:</string>
-    <string name="stock_high_label">High:</string>
-    <string name="stock_low_label">Low:</string>
-    <string name="stock_open_label">Open:</string>
-    <string name="stock_ask_label">Ask:</string>
-    <string name="stock_bid_label">Bid:</string>
+    <string name="stock_previous_close_label" translatable="true">Prev Close: </string>
+    <string name="stock_high_label">High: </string>
+    <string name="stock_low_label">Low: </string>
+    <string name="stock_open_label">Open: </string>
+    <string name="stock_ask_label">Ask: </string>
+    <string name="stock_bid_label">Bid: </string>
 
     <string name="stock_list_sybmol" translatable="true">Stock Symbol</string>
+    <string name="stock_list_previous_close" translatable="true">Previous Close </string>
     <string name="stock_list_current_price" translatable="true">Current Price</string>
     <string name="stock_list_absolute_change" translatable="true">Absolute change</string>
     <string name="stock_list_percentage_change" translatable="true">Percentage change</string>
+    <string name="stock_list_open" translatable="true">Open </string>
+    <string name="stock_list_high" translatable="true">High </string>
+    <string name="stock_list_low" translatable="true">Low </string>
+    <string name="stock_list_ask" translatable="true">Asking Price </string>
+    <string name="stock_list_bid" translatable="true">Biding Price </string>
     <string name="stock_list_change_negative" translatable="true">negative</string>
     <string name="stock_empty_view" translatable="true">Empty Text View</string>
+
+    <string name="symbol_query">symbol=?</string>
+    <string name="unknown_URI">Unkown URI: %s</string>
+
+    <string name="remote_view_ask">Ask(%s):</string>
+    <string name="remote_view_bid">Bid(%s):</string>
 
     <string name="widget_title_stock" translatable="true">Stock Hawk Quotes</string>
 </resources>

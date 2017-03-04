@@ -31,12 +31,13 @@ import com.udacity.stockhawk.widget.StockQuoteWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.udacity.stockhawk.sync.QuoteSyncJob.ACTION_DATA_UPDATED;
+
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
         StockAdapter.StockAdapterOnClickHandler {
 
     private static final int STOCK_LOADER = 0;
-    public static final String STOCK_QUOTE = "STOCK_SYMBOL";
     @SuppressWarnings("WeakerAccess")
     @BindView(R.id.recycler_view)
     RecyclerView stockRecyclerView;
@@ -51,12 +52,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onClick(String symbol) {
         Intent sync = new Intent(this, QuoteIntentService.class);
-        sync.putExtra(STOCK_QUOTE, symbol);
+        sync.putExtra(getApplicationContext().getString(R.string.STOCK_QUOTE), symbol);
         startService(sync);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -84,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
                 PrefUtils.removeStock(MainActivity.this, symbol);
                 getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
+                updateWidget();
+//                Intent dataUpdatedIntent = new Intent(getBaseContext(), StockQuoteWidgetProvider.class);
+//                dataUpdatedIntent.setAction(ACTION_DATA_UPDATED);
+//                getBaseContext().sendBroadcast(dataUpdatedIntent);
             }
         }).attachToRecyclerView(stockRecyclerView);
     }
@@ -118,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void button(@SuppressWarnings("UnusedParameters") View view) {
-        new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
+        new AddStockDialog().show(getFragmentManager(), StockDetailFragment.class.toString());
     }
 
     void addStock(String symbol) {
@@ -134,13 +140,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             PrefUtils.addStock(this, symbol);
             QuoteSyncJob.syncImmediately(this);
 
-            //http://stackoverflow.com/questions/3455123/programmatically-update-widget-from-activity-service-receiver
             Intent widgetIntent = new Intent(this, StockQuoteWidgetProvider.class);
             widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             int[] ids = {R.xml.stock_appwidget_info};
             widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
             sendBroadcast(widgetIntent);
         }
+    }
+
+    private void updateWidget()
+    {
+        //http://stackoverflow.com/questions/3455123/programmatically-update-widget-from-activity-service-receiver
+        Intent dataUpdatedIntent = new Intent(getBaseContext(), StockQuoteWidgetProvider.class);
+        dataUpdatedIntent.setAction(ACTION_DATA_UPDATED);
+        getBaseContext().sendBroadcast(dataUpdatedIntent);
     }
 
     @Override

@@ -65,7 +65,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String stock_symbol = args.getString(MainActivity.STOCK_QUOTE);
+        String stock_symbol = args.getString(getContext().getString(R.string.STOCK_QUOTE));
         Uri uri = Contract.Quote.makeUriForStock(stock_symbol);
         return new CursorLoader(getActivity(),
                                uri,
@@ -87,11 +87,10 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             if (history.isEmpty())
                 return;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+            SimpleDateFormat sdf = new SimpleDateFormat(getContext().getString(R.string.date_format));
             Calendar cal = Calendar.getInstance();
             String date = sdf.format(cal.getTime());
 
-            String symbol = data.getString(Contract.Quote.POSITION_SYMBOL);
             String mName = data.getString(Contract.Quote.POSITION_NAME);
             Float price = data.getFloat(Contract.Quote.POSITION_PRICE);
             Float prevClose = data.getFloat(Contract.Quote.POSITION_PREVIOUS_CLOSE);
@@ -148,39 +147,39 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
             prevCloseTV.setText(getContext().getString(R.string.stock_previous_close_label) + closeLabel);
             prevCloseTV.setTextSize(20f);
             prevCloseTV.setTypeface(face);
-            prevCloseTV.setContentDescription("Previous Close" + " " + priceLabel);
+            prevCloseTV.setContentDescription(getContext().getString(R.string.stock_list_previous_close) + priceLabel);
 
             String openLabel = dollarFormat.format(open);
             openTV.setText(getContext().getString(R.string.stock_open_label) + openLabel);
             openTV.setTextSize(20f);
             openTV.setTypeface(face);
-            openTV.setContentDescription("Open" + " " + openLabel);
+            openTV.setContentDescription(getContext().getString(R.string.stock_list_open) + openLabel);
 
             String highLabel = dollarFormat.format(dayHigh);
             dayHighTV.setText(getContext().getString(R.string.stock_high_label) + highLabel);
             dayHighTV.setTextSize(20f);
             dayHighTV.setTypeface(face);
-            dayHighTV.setContentDescription("High" + " " + highLabel);
+            dayHighTV.setContentDescription(getContext().getString(R.string.stock_list_high)  + highLabel);
 
             String lowLabel = dollarFormat.format(dayLow);
             dayLowTV.setText(getContext().getString(R.string.stock_low_label) + lowLabel);
             dayLowTV.setTextSize(20f);
             dayLowTV.setTypeface(face);
-            dayLowTV.setContentDescription("Low" + " " + lowLabel);
+            dayLowTV.setContentDescription(getContext().getString(R.string.stock_list_low)  + lowLabel);
 
             String askLabel = dollarFormat.format(askPrice);
             String askSizeLabel = askSize.toString();
             askPriceTV.setText(getContext().getString(R.string.stock_ask_label) + askLabel + " X " + askSizeLabel);
             askPriceTV.setTextSize(20f);
             askPriceTV.setTypeface(face);
-            askPriceTV.setContentDescription("Ask Price" + " " + askLabel + " by " + askSizeLabel);
+            askPriceTV.setContentDescription(getContext().getString(R.string.stock_list_ask)  + askLabel + " by " + askSizeLabel);
 
             String bidLabel = dollarFormat.format(bidPrice);
             String bidSizeLabel = bidSize.toString();
             bidPriceTV.setText(getContext().getString(R.string.stock_bid_label) + bidLabel + " X " + bidSizeLabel);
             bidPriceTV.setTextSize(20f);
             bidPriceTV.setTypeface(face);
-            bidPriceTV.setContentDescription("Bid Price" + " " + bidLabel + " by " + bidSizeLabel);
+            bidPriceTV.setContentDescription(getContext().getString(R.string.stock_list_bid)  + bidLabel + " by " + bidSizeLabel);
 
             Map<Long, CandleEntry> quoteMap = new TreeMap<>(parseHistory(history));
             List<String> dates = new ArrayList<>();
@@ -224,7 +223,7 @@ public class StockDetailFragment extends Fragment implements LoaderManager.Loade
 
     private String addDate(Long dateMils)
     {
-        DateFormat formatter = new SimpleDateFormat("MMM dd, yy", Locale.US);
+        DateFormat formatter = new SimpleDateFormat(getContext().getString(R.string.date_format), Locale.US);
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(dateMils);

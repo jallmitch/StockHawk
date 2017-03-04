@@ -60,16 +60,16 @@ public class StockViewFactory implements RemoteViewsService.RemoteViewsFactory
         stockView.setTextViewText(R.id.stock_open, dollarFormat.format(stockQuote.openPrice));
         stockView.setTextViewText(R.id.stock_day_high, dollarFormat.format(stockQuote.highPrice));
         stockView.setTextViewText(R.id.stock_day_low, dollarFormat.format(stockQuote.lowPrice));
-        stockView.setTextViewText(R.id.ask_size, "Ask(" + stockQuote.askSize + "):");
+        stockView.setTextViewText(R.id.ask_size, context.getString(R.string.remote_view_ask, stockQuote.askSize.toString()));
         stockView.setTextViewText(R.id.stock_ask,  dollarFormat.format(stockQuote.askPrice));
-        stockView.setTextViewText(R.id.bid_size, "Bid(" + stockQuote.bidSize + "):");
+        stockView.setTextViewText(R.id.bid_size, context.getString(R.string.remote_view_bid, stockQuote.bidSize.toString()));
         stockView.setTextViewText(R.id.stock_bid, dollarFormat.format(stockQuote.bidPrice));
 
         Bundle bundle = new Bundle();
         bundle.putString(StockQuoteWidgetProvider.EXTRA_STRING_ID, stockQuote.stockSymbol);
 
         Intent fillInIntent = new Intent();
-        fillInIntent.setAction(StockQuoteWidgetProvider.STOCK_QUOTE);
+        fillInIntent.setAction(StockQuoteWidgetProvider.WIDGET_STOCK_QUOTE);
         fillInIntent.putExtras(bundle);
 
         stockView.setOnClickFillInIntent(R.id.stock_item_widget, fillInIntent);
@@ -82,7 +82,7 @@ public class StockViewFactory implements RemoteViewsService.RemoteViewsFactory
         Cursor cursor = context.getContentResolver().query(Contract.Quote.URI, null, null, null, null);
         stockQuotes = new ArrayList<>();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.date_format));
         Calendar cal = Calendar.getInstance();
         String date = sdf.format(cal.getTime());
 
